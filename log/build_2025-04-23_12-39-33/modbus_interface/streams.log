@@ -1,0 +1,24 @@
+[1.313s] Invoking command in '/home/npd/modbus_ws/src/modbus_interface': PYTHONPATH=/home/npd/modbus_ws/build/modbus_interface/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/npd/modbus_ws/install/modbus_interface/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/modbus_interface build --build-base /home/npd/modbus_ws/build/modbus_interface/build install --record /home/npd/modbus_ws/build/modbus_interface/install.log --single-version-externally-managed install_data
+[1.783s] running egg_info
+[1.784s] writing ../../build/modbus_interface/modbus_interface.egg-info/PKG-INFO
+[1.785s] writing dependency_links to ../../build/modbus_interface/modbus_interface.egg-info/dependency_links.txt
+[1.785s] writing entry points to ../../build/modbus_interface/modbus_interface.egg-info/entry_points.txt
+[1.786s] writing requirements to ../../build/modbus_interface/modbus_interface.egg-info/requires.txt
+[1.786s] writing top-level names to ../../build/modbus_interface/modbus_interface.egg-info/top_level.txt
+[1.790s] reading manifest file '../../build/modbus_interface/modbus_interface.egg-info/SOURCES.txt'
+[1.792s] writing manifest file '../../build/modbus_interface/modbus_interface.egg-info/SOURCES.txt'
+[1.792s] running build
+[1.793s] running build_py
+[1.793s] copying modbus_interface/modbus_node.py -> /home/npd/modbus_ws/build/modbus_interface/build/lib/modbus_interface
+[1.794s] running install
+[1.794s] running install_lib
+[1.796s] copying /home/npd/modbus_ws/build/modbus_interface/build/lib/modbus_interface/modbus_node.py -> /home/npd/modbus_ws/install/modbus_interface/lib/python3.10/site-packages/modbus_interface
+[1.798s] byte-compiling /home/npd/modbus_ws/install/modbus_interface/lib/python3.10/site-packages/modbus_interface/modbus_node.py to modbus_node.cpython-310.pyc
+[1.799s] running install_data
+[1.800s] running install_egg_info
+[1.804s] removing '/home/npd/modbus_ws/install/modbus_interface/lib/python3.10/site-packages/modbus_interface-0.0.0-py3.10.egg-info' (and everything under it)
+[1.805s] Copying ../../build/modbus_interface/modbus_interface.egg-info to /home/npd/modbus_ws/install/modbus_interface/lib/python3.10/site-packages/modbus_interface-0.0.0-py3.10.egg-info
+[1.807s] running install_scripts
+[1.848s] Installing modbus_node script to /home/npd/modbus_ws/install/modbus_interface/lib/modbus_interface
+[1.849s] writing list of installed files to '/home/npd/modbus_ws/build/modbus_interface/install.log'
+[1.889s] Invoked command in '/home/npd/modbus_ws/src/modbus_interface' returned '0': PYTHONPATH=/home/npd/modbus_ws/build/modbus_interface/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/npd/modbus_ws/install/modbus_interface/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/modbus_interface build --build-base /home/npd/modbus_ws/build/modbus_interface/build install --record /home/npd/modbus_ws/build/modbus_interface/install.log --single-version-externally-managed install_data
