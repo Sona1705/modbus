@@ -1,14 +1,16 @@
 import rclpy
 from rclpy.node import Node
+from sensor_msgs.msg import Joy
 from pymodbus.client import ModbusSerialClient
 
 
-class ModbusMotorController(Node):
+class ModbusJoystickController(Node):
     def __init__(self):
-        super().__init__('modbus_motor_controller')
+        super().__init__('modbus_joystick_controller')
 
+        # Modbus setup
         self.client = ModbusSerialClient(
-            port='/dev/ttyUSB0',
+            port='/dev/ttyUSB0',  # <-- Change this if your USB device is different (e.g., /dev/ttyUSB1)
             baudrate=9600,
             parity='N',
             stopbits=1,
@@ -17,56 +19,59 @@ class ModbusMotorController(Node):
         )
 
         if not self.client.connect():
-            self.get_logger().error(' Failed to connect to Modbus device.')
-            rclpy.shutdown()
-            return
+            self.get_logger().error("Failed to connect to Modbus device.")
+            raise RuntimeError("Modbus connection failed")
 
-        self.slave_ids = [1, 2]  # Control both motors
+        # Slave IDs for both motor drivers
+        self.slave_ids = [1, 2]
         self.register_address = 124  # 40125 - 40001
-        self.control_loop()
+        self.last_cmd = None
 
-    def enable_motor(self):
-        self.write_to_all(159, 'Motor enabled.')  # 0x9F
+        # Subscribe to joystick messages
+        self.subscription = self.create_subscription(Joy, '/joy', self.joystick_callback, 10)
 
-    def disable_motor(self):
-        self.write_to_all(158, 'Motor disabled.')  # 0x9E
+    def joystick_callback(self, msg: Joy):
+        axis_y = msg.axes[1]
+        btn_enable = msg.buttons[0]
+        btn_disable = msg.buttons[1]
 
-    def start_jog(self):
-        self.write_to_all(150, 'Start Jogging (CJ sent).')  # 0x96
+        # Motor enable/disable
+        if btn_enable:
+            self.send_command(159, "Motors Enabled")
+        elif btn_disable:
+            self.send_command(158, "Motors Disabled")
 
-    def stop_jog(self):
-        self.write_to_all(216, 'Stop Jogging (SJ sent).')  # 0xD8
+        # Jog control
+        if axis_y > 0.5:
+            if self.last_cmd != 'forward':
+                self.send_command(150, "Jog Forward")
+                self.last_cmd = 'forward'
+        elif axis_y < -0.5:
+            if self.last_cmd != 'reverse':
+                self.send_command(151, "Jog Reverse")
+                self.last_cmd = 'reverse'
+        else:
+            if self.last_cmd not in [None, 'stop']:
+                self.send_command(216, "Stop Jog")
+                self.last_cmd = 'stop'
 
-    def write_to_all(self, value, message):
+    def send_command(self, value, log_msg):
         for sid in self.slave_ids:
             result = self.client.write_register(self.register_address, value, slave=sid)
             if result.isError():
-                self.get_logger().error(f"Failed to write {value} to register {self.register_address} for motor {sid}.")
+                self.get_logger().error(f"Failed to write {value} to motor {sid}")
             else:
-                self.get_logger().info(f"{message} (Motor {sid})")
-
-    def control_loop(self):
-        while rclpy.ok():
-            cmd = input("Enter command (enable / disable / start_jog / stop_jog / exit): ").strip().lower()
-
-            if cmd == "enable":
-                self.enable_motor()
-            elif cmd == "disable":
-                self.disable_motor()
-            elif cmd == "start_jog":
-                self.start_jog()
-            elif cmd == "stop_jog":
-                self.stop_jog()
-            elif cmd == "exit":
-                self.get_logger().info(" Exiting...")
-                break
-            else:
-                self.get_logger().warn(" Invalid command. Use 'enable', 'disable', 'start_jog', 'stop_jog', or 'exit'.")
+                self.get_logger().info(f"{log_msg} (Motor {sid})")
 
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ModbusMotorController()
+    try:
+        node = ModbusJoystickController()
+    except RuntimeError:
+        rclpy.shutdown()
+        return
+    rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
 
